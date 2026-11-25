@@ -1,7 +1,4 @@
 import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
 import './App.css'
 
 const initialProducts = [
@@ -37,6 +34,15 @@ function App() {
     })
   }
 
+  const setQuantity = (id, quantity) => {
+    setCart(cart => {
+      const i = cart.findIndex(product => product.id === id)
+      const product = cart[i]
+
+      return cart.with(i, { ...product, quantity })
+    })
+  }
+
   return (
     <div>
       <table>
@@ -50,12 +56,12 @@ function App() {
         </thead>
         <tbody>
           {cart.map(product => (
-            <tr>
+            <tr key={product.id}>
               <th scope='row'>{product.name}</th>
               <td>${product.price}</td>
               <td>
-                <button onClick={() => changeQuantity(product.id, -1)}>-</button>
-                <input type="number" value={product.quantity} />
+                <button disabled={product.quantity === 0} onClick={() => changeQuantity(product.id, -1)}>-</button>
+                <input type="number" value={product.quantity} onChange={(e) => setQuantity(product.id, Number(e.target.value))} />
                 <button onClick={() => changeQuantity(product.id, 1)}>+</button>
               </td>
               <td>${(product.price * product.quantity).toFixed(2)}</td>
